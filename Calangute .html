@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beach Food Menu</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(#fef9e7, #aee1f9);
+  margin: 0; padding: 0;
+  text-align: center;
+}
+header {
+  background: rgba(255,255,255,0.7);
+  padding: 15px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #0a466e;
+}
+.menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  padding: 15px;
+}
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.card img {
+  width: 100%;
+  border-radius: 10px;
+  height: 100px;
+  object-fit: cover;
+}
+button {
+  background: #0a466e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-top: 8px;
+}
+#orderSection, #confirmSection, #paymentSection {
+  display: none;
+}
+.qr {
+  width: 200px;
+  margin: 10px auto;
+}
+</style>
+</head>
+<body>
+
+<header>🏖 Beach Food Menu</header>
+
+<section id="menuSection">
+  <div>
+    <label>Table No: 
+      <select id="tableNo">
+        <option value="">Select</option>
+        <script>
+          for(let i=1;i<=50;i++){
+            document.write(`<option value="${i}">${i}</option>`);
+          }
+        </script>
+      </select>
+    </label>
+  </div>
+  <div class="menu" id="menuList"></div>
+  <button onclick="goToOrder()">Next ➜</button>
+</section>
+
+<section id="orderSection">
+  <h3>Your Order</h3>
+  <div id="orderList"></div>
+  <button onclick="goToConfirm()">Confirm ➜</button>
+</section>
+
+<section id="confirmSection">
+  <h3>Confirm Your Order</h3>
+  <div id="confirmList"></div>
+  <p>Total: ₹<span id="totalAmount"></span></p>
+  <button onclick="goToPayment()">Proceed to Pay</button>
+</section>
+
+<section id="paymentSection">
+  <h3>Scan & Pay</h3>
+  <img src="https://quickchart.io/qr?text=upi://pay?pa=9154095125@ybl&pn=BeachFoodMenu&am=1&cu=INR" class="qr" alt="UPI QR">
+  <p>UPI ID: 9154095125@ybl</p>
+  <button onclick="completeOrder()">✅ Payment Done</button>
+</section>
+
+<script>
+const foods = [
+  {name:'Fried Chicken', img:'https://cdn.pixabay.com/photo/2020/03/28/14/51/fried-chicken-4977349_1280.jpg'},
+  {name:'Grilled Fish', img:'https://cdn.pixabay.com/photo/2019/04/20/20/23/chicken-4142678_1280.jpg'},
+  {name:'Beach Burger', img:'https://cdn.pixabay.com/photo/2020/03/28/14/52/fried-chicken-4977364_1280.jpg'},
+  {name:'Veg Salad', img:'https://cdn.pixabay.com/photo/2024/05/14/23/35/ai-generated-8762303_1280.jpg'},
+  {name:'Coconut Drink', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT0MDhVvUAGE-hTdft8mOwBQsI4JYUcmgBEanJUnOsX-o3h2Bi0R5OrOw&s=10'},
+  {name:'Ice Cream', img:'https://cdn.pixabay.com/photo/2019/04/20/20/23/chicken-4142678_1280.jpg'},
+  {name:'Beach Fries', img:'https://cdn.pixabay.com/photo/2020/03/28/14/52/fried-chicken-4977364_1280.jpg'},
+  {name:'Mocktail', img:'https://cdn.pixabay.com/photo/2024/05/14/23/35/ai-generated-8762303_1280.jpg'}
+];
+const cart=[];
+const menuList=document.getElementById('menuList');
+foods.forEach((f,i)=>{
+  menuList.innerHTML+=`
+    <div class="card">
+      <img src="${f.img}" alt="${f.name}">
+      <h4>${f.name}</h4>
+      <p>₹1</p>
+      <button onclick="addToCart(${i})">Add</button>
+    </div>`;
+});
+function addToCart(i){
+  cart.push(foods[i]);
+  alert(foods[i].name+" added!");
+}
+function goToOrder(){
+  if(!document.getElementById('tableNo').value){alert('Select table number');return;}
+  document.getElementById('menuSection').style.display='none';
+  document.getElementById('orderSection').style.display='block';
+  let list='';
+  cart.forEach((c,i)=>{list+=`<p>${i+1}. ${c.name} - ₹1</p>`});
+  document.getElementById('orderList').innerHTML=list||'No items selected.';
+}
+function goToConfirm(){
+  document.getElementById('orderSection').style.display='none';
+  document.getElementById('confirmSection').style.display='block';
+  let list='';
+  cart.forEach((c,i)=>{list+=`<p>${i+1}. ${c.name}</p>`});
+  document.getElementById('confirmList').innerHTML=list;
+  document.getElementById('totalAmount').textContent=cart.length;
+}
+function goToPayment(){
+  document.getElementById('confirmSection').style.display='none';
+  document.getElementById('paymentSection').style.display='block';
+}
+function completeOrder(){
+  const table=document.getElementById('tableNo').value;
+  const items=cart.map(c=>c.name).join(', ');
+  const total=cart.length;
+  const msg=`Order confirmed! Table ${table}, items: ${items}, total ₹${total}. Thank you for choosing Beach Food Menu 🌴`;
+  window.open(`https://wa.me/919154095125?text=${encodeURIComponent(msg)}`);
+  setTimeout(()=>{location.reload();},2000);
+}
+</script>
+</body>
+</html>
