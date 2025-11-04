@@ -5,162 +5,192 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Beach Food Menu</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(#fef9e7, #aee1f9);
-  margin: 0; padding: 0;
-  text-align: center;
-}
-header {
-  background: rgba(255,255,255,0.7);
-  padding: 15px;
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #0a466e;
-}
-.menu {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-  padding: 15px;
-}
-.card {
-  background: white;
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.card img {
-  width: 100%;
-  border-radius: 10px;
-  height: 100px;
-  object-fit: cover;
-}
-button, a.btn {
-  background: #0a466e;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  margin-top: 8px;
-  text-decoration: none;
-  display: inline-block;
-}
-#orderSection, #confirmSection, #paymentSection {
-  display: none;
-}
-.qr {
-  width: 200px;
-  margin: 10px auto;
-}
+  body {
+    font-family: Arial, sans-serif;
+    background: url('https://cdn.pixabay.com/photo/2016/11/29/12/54/beach-1867271_1280.jpg') center/cover no-repeat fixed;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: #fff;
+  }
+  header {
+    background: rgba(0,0,0,0.5);
+    padding: 15px;
+    font-size: 1.6em;
+    font-weight: bold;
+  }
+  section {
+    background: rgba(0,0,0,0.4);
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 500px;
+  }
+  .food {
+    background: rgba(255,255,255,0.1);
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  button, a.btn {
+    background: #0a466e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin: 8px;
+  }
+  button:hover, a.btn:hover {
+    background: #0975a3;
+  }
+  img.foodimg {
+    width: 100%;
+    border-radius: 10px;
+  }
+  img.qr {
+    width: 180px;
+    height: 180px;
+    border: 3px solid #fff;
+    border-radius: 10px;
+    margin: 10px;
+  }
 </style>
 </head>
 <body>
+<header>🏖️ Beach Food Menu</header>
 
-<header>🏖 Beach Food Menu</header>
+<section id="tableSection">
+  <h3>Select Table Number</h3>
+  <select id="tableNo">
+    <option value="">-- Choose Table --</option>
+  </select>
+  <br>
+  <button onclick="goToMenu()">Proceed</button>
+</section>
 
-<section id="menuSection">
-  <div>
-    <label>Table No: 
-      <select id="tableNo">
-        <option value="">Select</option>
-        <script>
-          for(let i=1;i<=50;i++){
-            document.write(`<option value="${i}">${i}</option>`);
-          }
-        </script>
-      </select>
-    </label>
+<section id="menuSection" style="display:none;">
+  <h3>Menu</h3>
+
+  <div class="food">
+    <img src="https://cdn.pixabay.com/photo/2020/03/28/14/51/fried-chicken-4977349_1280.jpg" class="foodimg">
+    <p>Fried Chicken - ₹1</p>
+    <button onclick="addToCart('Fried Chicken',1)">Add</button>
   </div>
-  <div class="menu" id="menuList"></div>
-  <button onclick="goToOrder()">Next ➜</button>
+
+  <div class="food">
+    <img src="https://cdn.pixabay.com/photo/2019/04/20/20/23/chicken-4142678_1280.jpg" class="foodimg">
+    <p>Grilled Chicken - ₹1</p>
+    <button onclick="addToCart('Grilled Chicken',1)">Add</button>
+  </div>
+
+  <div class="food">
+    <img src="https://cdn.pixabay.com/photo/2024/05/14/23/35/ai-generated-8762303_1280.jpg" class="foodimg">
+    <p>Beach Fish Curry - ₹1</p>
+    <button onclick="addToCart('Beach Fish Curry',1)">Add</button>
+  </div>
+
+  <br>
+  <button onclick="goToConfirm()">View Order</button>
 </section>
 
-<section id="orderSection">
-  <h3>Your Order</h3>
-  <div id="orderList"></div>
-  <button onclick="goToConfirm()">Confirm ➜</button>
-</section>
-
-<section id="confirmSection">
-  <h3>Confirm Your Order</h3>
-  <div id="confirmList"></div>
-  <p>Total: ₹<span id="totalAmount"></span></p>
+<section id="confirmSection" style="display:none;">
+  <h3>Confirm Order</h3>
+  <ul id="cartList" style="list-style:none; padding:0;"></ul>
+  <p>Total: ₹<span id="totalAmount">0</span></p>
   <button onclick="goToPayment()">Proceed to Pay</button>
 </section>
 
-<section id="paymentSection">
+<section id="paymentSection" style="display:none;">
   <h3>Scan & Pay</h3>
+  <!-- Correct QR for Airtel Bank -->
   <img src="https://quickchart.io/qr?text=upi://pay?pa=9154095125@ybl&pn=BeachFoodMenu&am=1&cu=INR" class="qr" alt="UPI QR">
-  <p>UPI ID: 9154095125@ybl</p>
+  <p><b>UPI ID:</b> 9154095125@ybl</p>
 
-  <a id="payButton" href="#" class="btn">Pay via UPI</a>
+  <!-- intent-based link for PhonePe/Paytm/GPay -->
+  <a id="payButton" href="intent://pay?pa=9154095125@ybl&pn=BeachFoodMenu&am=1&cu=INR#Intent;scheme=upi;package=com.phonepe.app;end" class="btn">
+    💳 Pay via UPI App
+  </a>
+
   <button onclick="completeOrder()">✅ I have paid — Send Order</button>
 </section>
 
 <script>
-const foods = [
-  {name:'Fried Chicken', img:'https://cdn.pixabay.com/photo/2020/03/28/14/51/fried-chicken-4977349_1280.jpg'},
-  {name:'Grilled Fish', img:'https://cdn.pixabay.com/photo/2019/04/20/20/23/chicken-4142678_1280.jpg'},
-  {name:'Beach Burger', img:'https://cdn.pixabay.com/photo/2020/03/28/14/52/fried-chicken-4977364_1280.jpg'},
-  {name:'Veg Salad', img:'https://cdn.pixabay.com/photo/2024/05/14/23/35/ai-generated-8762303_1280.jpg'},
-  {name:'Coconut Drink', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT0MDhVvUAGE-hTdft8mOwBQsI4JYUcmgBEanJUnOsX-o3h2Bi0R5OrOw&s=10'},
-  {name:'Ice Cream', img:'https://cdn.pixabay.com/photo/2019/04/20/20/23/chicken-4142678_1280.jpg'},
-  {name:'Beach Fries', img:'https://cdn.pixabay.com/photo/2020/03/28/14/52/fried-chicken-4977364_1280.jpg'},
-  {name:'Mocktail', img:'https://cdn.pixabay.com/photo/2024/05/14/23/35/ai-generated-8762303_1280.jpg'}
-];
-const cart=[];
-const menuList=document.getElementById('menuList');
-foods.forEach((f,i)=>{
-  menuList.innerHTML+=`
-    <div class="card">
-      <img src="${f.img}" alt="${f.name}">
-      <h4>${f.name}</h4>
-      <p>₹1</p>
-      <button onclick="addToCart(${i})">Add</button>
-    </div>`;
-});
-function addToCart(i){
-  cart.push(foods[i]);
-  alert(foods[i].name+" added!");
+let cart = [];
+
+// Fill 50 tables
+window.onload = function(){
+  const sel = document.getElementById('tableNo');
+  for(let i=1;i<=50;i++){
+    let opt=document.createElement('option');
+    opt.value=i;
+    opt.text="Table "+i;
+    sel.appendChild(opt);
+  }
 }
-function goToOrder(){
-  if(!document.getElementById('tableNo').value){alert('Select table number');return;}
-  document.getElementById('menuSection').style.display='none';
-  document.getElementById('orderSection').style.display='block';
-  let list='';
-  cart.forEach((c,i)=>{list+=`<p>${i+1}. ${c.name} - ₹1</p>`});
-  document.getElementById('orderList').innerHTML=list||'No items selected.';
+
+function goToMenu(){
+  if(document.getElementById('tableNo').value===""){
+    alert("Please select your table number.");
+    return;
+  }
+  document.getElementById('tableSection').style.display='none';
+  document.getElementById('menuSection').style.display='block';
 }
+
+function addToCart(name, price){
+  cart.push({name,price});
+  alert(name+" added!");
+}
+
 function goToConfirm(){
-  document.getElementById('orderSection').style.display='none';
+  if(cart.length===0){alert("No items added.");return;}
+  document.getElementById('menuSection').style.display='none';
   document.getElementById('confirmSection').style.display='block';
-  let list='';
-  cart.forEach((c,i)=>{list+=`<p>${i+1}. ${c.name}</p>`});
-  document.getElementById('confirmList').innerHTML=list;
-  document.getElementById('totalAmount').textContent=cart.length;
+  const list=document.getElementById('cartList');
+  list.innerHTML='';
+  let total=0;
+  cart.forEach(c=>{
+    let li=document.createElement('li');
+    li.textContent=c.name+" - ₹"+c.price;
+    list.appendChild(li);
+    total+=c.price;
+  });
+  document.getElementById('totalAmount').innerText=total;
 }
-function updatePayButton(){
-  const total = cart.length; // ₹ per item
-  const amount = total > 0 ? total : 1;
-  const upiLink = `upi://pay?pa=9154095125@ybl&pn=BeachFoodMenu&am=${amount}&cu=INR`;
-  const payButton = document.getElementById('payButton');
-  payButton.setAttribute('href', upiLink);
-  payButton.setAttribute('target', '_self');
-}
+
 function goToPayment(){
   document.getElementById('confirmSection').style.display='none';
   document.getElementById('paymentSection').style.display='block';
   updatePayButton();
 }
+
+function updatePayButton(){
+  const total = cart.reduce((sum,c)=>sum+c.price,0);
+  const amount = total>0? total:1;
+  const upiIntent = `intent://pay?pa=9154095125@ybl&pn=BeachFoodMenu&am=${amount}&cu=INR#Intent;scheme=upi;package=com.phonepe.app;end`;
+  document.getElementById('payButton').setAttribute('href', upiIntent);
+
+  // Also refresh QR with correct total
+  const qr = document.querySelector('img.qr');
+  qr.src = `https://quickchart.io/qr?text=upi://pay?pa=9154095125@ybl&pn=BeachFoodMenu&am=${amount}&cu=INR`;
+}
+
 function completeOrder(){
-  const table=document.getElementById('tableNo').value;
-  const items=cart.map(c=>c.name).join(', ');
-  const total=cart.length;
-  const msg=`Order confirmed! Table ${table}, items: ${items}, total ₹${total}. Thank you for choosing Beach Food Menu 🌴`;
+  const table = document.getElementById('tableNo').value;
+  if(!table){ alert('Please select table number before finishing.'); return; }
+
+  const items = cart.map(c => c.name).join(', ');
+  const total = cart.reduce((sum,c)=>sum+c.price,0);
+
+  const msg = `Order confirmed! Table ${table}, items: ${items}, total ₹${total}. Thank you for choosing Beach Food Menu 🌴`;
   window.open(`https://wa.me/919154095125?text=${encodeURIComponent(msg)}`);
-  setTimeout(()=>{location.reload();},2000);
+  setTimeout(()=>{ location.reload(); },2000);
 }
 </script>
+
 </body>
 </html>
