@@ -36,13 +36,15 @@ header {
   height: 100px;
   object-fit: cover;
 }
-button {
+button, a.btn {
   background: #0a466e;
   color: white;
   border: none;
   border-radius: 8px;
   padding: 8px 14px;
   margin-top: 8px;
+  text-decoration: none;
+  display: inline-block;
 }
 #orderSection, #confirmSection, #paymentSection {
   display: none;
@@ -91,7 +93,9 @@ button {
   <h3>Scan & Pay</h3>
   <img src="https://quickchart.io/qr?text=upi://pay?pa=9154095125@ybl&pn=BeachFoodMenu&am=1&cu=INR" class="qr" alt="UPI QR">
   <p>UPI ID: 9154095125@ybl</p>
-  <button onclick="completeOrder()">✅ Payment Done</button>
+
+  <a id="payButton" href="#" class="btn">Pay via UPI</a>
+  <button onclick="completeOrder()">✅ I have paid — Send Order</button>
 </section>
 
 <script>
@@ -136,9 +140,18 @@ function goToConfirm(){
   document.getElementById('confirmList').innerHTML=list;
   document.getElementById('totalAmount').textContent=cart.length;
 }
+function updatePayButton(){
+  const total = cart.length; // ₹ per item
+  const amount = total > 0 ? total : 1;
+  const upiLink = `upi://pay?pa=9154095125@ybl&pn=BeachFoodMenu&am=${amount}&cu=INR`;
+  const payButton = document.getElementById('payButton');
+  payButton.setAttribute('href', upiLink);
+  payButton.setAttribute('target', '_self');
+}
 function goToPayment(){
   document.getElementById('confirmSection').style.display='none';
   document.getElementById('paymentSection').style.display='block';
+  updatePayButton();
 }
 function completeOrder(){
   const table=document.getElementById('tableNo').value;
@@ -151,4 +164,3 @@ function completeOrder(){
 </script>
 </body>
 </html>
-
